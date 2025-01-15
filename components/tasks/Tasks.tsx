@@ -1,7 +1,7 @@
 'use client'
 
-import Column from '@/components/Column'
 import { Each } from '@/components/Each'
+import Column from '@/components/tasks/Column'
 import { COLUMNS } from '@/constants/constant'
 import useFetchTasks from '@/queries/useFetchTasks'
 import useUpdateTask from '@/queries/useUpdateTask'

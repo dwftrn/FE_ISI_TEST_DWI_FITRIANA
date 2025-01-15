@@ -1,33 +1,11 @@
-'use client'
-
 import { fetchAllTeamUsers } from '@/actions/users'
 import useCreateTask from '@/queries/useCreateTask'
-import { Add16Filled, Dismiss16Filled } from '@fluentui/react-icons'
+import { Dismiss16Filled } from '@fluentui/react-icons'
 import { Task, User } from '@prisma/client'
 import { useEffect, useState } from 'react'
-import Button from './Button'
-import { Each } from './Each'
-import Input from './Input'
-
-const AddTaskCard = ({ columnId }: { columnId: Task['status'] }) => {
-  const [isExpanded, setIsExpanded] = useState(false)
-
-  if (isExpanded)
-    return (
-      <AddTaskForm columnId={columnId} onSuccess={() => setIsExpanded(false)} onCancel={() => setIsExpanded(false)} />
-    )
-
-  return (
-    <div
-      role={isExpanded ? '' : 'button'}
-      className='flex cursor-pointer items-center gap-2 rounded-lg p-2 text-sm hover:bg-neutral-700'
-      onClick={() => setIsExpanded(true)}
-    >
-      <Add16Filled />
-      Tambah
-    </div>
-  )
-}
+import Button from '../Button'
+import { Each } from '../Each'
+import Input from '../Input'
 
 const AddTaskForm = ({
   columnId,
@@ -93,4 +71,4 @@ const AddTaskForm = ({
   )
 }
 
-export default AddTaskCard
+export default AddTaskForm

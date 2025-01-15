@@ -1,10 +1,10 @@
-import { Column as ColumnType } from '@/@types/todo'
+import { Column as ColumnType } from '@/constants/constant'
 import { useDroppable } from '@dnd-kit/core'
-import AddTaskCard from './AddTaskCard'
-import { Each } from './Each'
-import TaskCard from './TaskCard'
-import { useSession } from 'next-auth/react'
 import { Task, UserRole } from '@prisma/client'
+import { useSession } from 'next-auth/react'
+import { Each } from '../Each'
+import AddTaskCard from './AddTaskCard'
+import TaskCard from './TaskCard'
 
 interface ColumnProps {
   column: ColumnType

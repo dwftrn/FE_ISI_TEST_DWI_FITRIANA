@@ -1,7 +1,7 @@
 import { fetchAllTasks } from '@/actions/tasks'
 import Header from '@/components/Header'
-import Tasks from '@/components/Tasks'
-import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import Tasks from '@/components/tasks/Tasks'
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
