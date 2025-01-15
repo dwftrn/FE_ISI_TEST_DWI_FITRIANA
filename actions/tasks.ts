@@ -1,9 +1,9 @@
 'use server'
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { prisma } from '@/lib/prisma'
 import { Task, User } from '@prisma/client'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 export async function fetchAllTasks() {
   return await prisma.task.findMany()
