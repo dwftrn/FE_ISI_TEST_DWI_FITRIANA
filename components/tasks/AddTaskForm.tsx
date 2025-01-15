@@ -6,17 +6,20 @@ import { useEffect, useState } from 'react'
 import Button from '../Button'
 import { Each } from '../Each'
 import Input from '../Input'
+import useUpdateTask from '@/queries/useUpdateTask'
 
-const AddTaskForm = ({
-  columnId,
-  onSuccess,
-  onCancel
-}: {
+interface AddTaskFormProps {
   columnId: Task['status']
   onSuccess(): void
   onCancel(): void
-}) => {
-  const { mutateAsync: createTask, isPending: isLoading } = useCreateTask()
+  task?: Task
+}
+
+const AddTaskForm = ({ columnId, onSuccess, onCancel, task }: AddTaskFormProps) => {
+  const { mutateAsync: createTask, isPending: isLoadingCreate } = useCreateTask()
+  const { mutateAsync: updateTask, isPending: isLoadingUpdate } = useUpdateTask()
+
+  const isLoading = isLoadingCreate || isLoadingUpdate
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -25,7 +28,12 @@ const AddTaskForm = ({
   const [assigneeId, setAssigneeId] = useState('')
 
   const handleAddTask = async () => {
-    await createTask({ title, description, status: columnId, assigneeId })
+    if (task) {
+      await updateTask({ id: task.id, title, description, status: columnId, assigneeId })
+    } else {
+      await createTask({ title, description, status: columnId, assigneeId })
+    }
+
     setTitle('')
     setDescription('')
     setAssigneeId('')
@@ -35,6 +43,14 @@ const AddTaskForm = ({
   useEffect(() => {
     fetchAllTeamUsers().then((data) => setTeams(data))
   }, [])
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title)
+      setDescription(task.description)
+      if (task.assigneeId) setAssigneeId(task.assigneeId)
+    }
+  }, [task])
 
   return (
     <div className='flex flex-col gap-2 rounded-lg'>
@@ -52,7 +68,7 @@ const AddTaskForm = ({
           disabled={!title || !description || !assigneeId || isLoading}
           isLoading={isLoading}
         >
-          Tambah
+          {task ? 'Ubah' : 'Tambah'}
         </Button>
         <Dismiss16Filled role='button' onClick={onCancel} />
         <select
