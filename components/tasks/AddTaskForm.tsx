@@ -1,12 +1,13 @@
 import { fetchAllTeamUsers } from '@/actions/users'
 import useCreateTask from '@/queries/useCreateTask'
 import { Dismiss16Filled } from '@fluentui/react-icons'
-import { Task, User } from '@prisma/client'
+import { Task, User, UserRole } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import Button from '../Button'
 import { Each } from '../Each'
 import Input from '../Input'
 import useUpdateTask from '@/queries/useUpdateTask'
+import { useSession } from 'next-auth/react'
 
 interface AddTaskFormProps {
   columnId: Task['status']
@@ -16,6 +17,9 @@ interface AddTaskFormProps {
 }
 
 const AddTaskForm = ({ columnId, onSuccess, onCancel, task }: AddTaskFormProps) => {
+  const { data: sessions } = useSession()
+  const user = sessions?.user as User
+
   const { mutateAsync: createTask, isPending: isLoadingCreate } = useCreateTask()
   const { mutateAsync: updateTask, isPending: isLoadingUpdate } = useUpdateTask()
 
@@ -54,7 +58,12 @@ const AddTaskForm = ({ columnId, onSuccess, onCancel, task }: AddTaskFormProps) 
 
   return (
     <div className='flex flex-col gap-2 rounded-lg'>
-      <Input placeholder='Judul' value={title} onChange={(e) => setTitle(e.target.value)} disabled={isLoading} />
+      <Input
+        placeholder='Judul'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        disabled={isLoading || user?.role === UserRole.TEAM}
+      />
       <textarea
         placeholder='Deskripsi'
         className='w-full resize-none rounded-lg bg-neutral-700 p-4 outline-none placeholder:text-neutral-400'
