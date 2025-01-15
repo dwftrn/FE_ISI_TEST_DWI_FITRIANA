@@ -24,3 +24,7 @@ export async function createTask(data: Pick<Task, 'title' | 'description' | 'sta
     }
   })
 }
+
+export async function updateTask(data: Partial<Task> & { id: Task['id'] }) {
+  return await prisma.task.update({ where: { id: data.id }, data })
+}

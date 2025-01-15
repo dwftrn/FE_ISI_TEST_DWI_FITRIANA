@@ -1,23 +1,21 @@
 'use client'
 
+import { fetchAllTeamUsers } from '@/actions/users'
+import useCreateTask from '@/queries/useCreateTask'
 import { Add16Filled, Dismiss16Filled } from '@fluentui/react-icons'
+import { Task, User } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import Button from './Button'
-import Input from './Input'
-import { createTask } from '@/actions/tasks'
-import { Task, User } from '@prisma/client'
 import { Each } from './Each'
-import { fetchAllTeamUsers } from '@/actions/users'
+import Input from './Input'
 
 const AddTaskCard = ({ columnId }: { columnId: Task['status'] }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const onAddTask = async (title: string, description: string, assigneeId: string) => {
-    await createTask({ title, description, status: columnId, assigneeId })
-    setIsExpanded(false)
-  }
-
-  if (isExpanded) return <AddTaskForm onAddTask={onAddTask} onCancel={() => setIsExpanded(false)} />
+  if (isExpanded)
+    return (
+      <AddTaskForm columnId={columnId} onSuccess={() => setIsExpanded(false)} onCancel={() => setIsExpanded(false)} />
+    )
 
   return (
     <div
@@ -32,30 +30,28 @@ const AddTaskCard = ({ columnId }: { columnId: Task['status'] }) => {
 }
 
 const AddTaskForm = ({
-  onAddTask,
+  columnId,
+  onSuccess,
   onCancel
 }: {
-  onAddTask(title: string, description: string, assigneeId: string): Promise<void>
+  columnId: Task['status']
+  onSuccess(): void
   onCancel(): void
 }) => {
+  const { mutateAsync: createTask, isPending: isLoading } = useCreateTask()
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
 
   const [teams, setTeams] = useState<User[]>([])
   const [assigneeId, setAssigneeId] = useState('')
 
-  const [isLoading, setIsLoading] = useState(false)
-
   const handleAddTask = async () => {
-    setIsLoading(true)
-    try {
-      await onAddTask(title, description, assigneeId)
-      setTitle('')
-      setDescription('')
-      setAssigneeId('')
-    } finally {
-      setIsLoading(false)
-    }
+    await createTask({ title, description, status: columnId, assigneeId })
+    setTitle('')
+    setDescription('')
+    setAssigneeId('')
+    onSuccess()
   }
 
   useEffect(() => {

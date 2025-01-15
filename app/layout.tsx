@@ -1,4 +1,5 @@
 import SessionProvider from '@/components/providers/SessionProvider'
+import TanstackProvider from '@/components/providers/TanstackProvider'
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
@@ -27,7 +28,9 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable} flex h-dvh flex-col antialiased`}>
-        <SessionProvider>{children}</SessionProvider>
+        <TanstackProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </TanstackProvider>
       </body>
     </html>
   )
